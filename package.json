@@ -1,0 +1,10 @@
+{
+    "name": "chatServer",
+    "version": "0.0.0",
+    "description": "RPU (rainbows ponies and unicorns) chat server",
+    "dependencies": {
+        "socket.io": "latest",
+        "express": "latest",
+    },
+    "author": "sarah yang barnekow"
+}

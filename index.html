@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+</head>
+<body>
+  <div id="hello">Welcome to the RPU (rainbows, ponies, and unicorns) Chatroom</div>
+  <div id="chatbody"></div>
+  <input type="text" id="chatentry"><button id="say">Say Something</button>
+  <ul id="users"></ul>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+  <script src="http://devmachine.com:7000/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="chat.js"></script>
+  <script>
+  var CHAT_SERVER = 'http://devmachine.com:7000'
+  $(document).ready(function(){
+    var socket = io.connect(CHAT_SERVER);
+    socket.on('connect', hello);
+    socket.on('message', incoming);
+    socket.on('disconnect', goodbye);
+
+    hello();
+    sendButtonClick();
+
+    function hello() {
+      $('#chatbody').append('Welcome to RPU!');
+    };
+
+    function incoming(msg){
+      $('#chatbody').append("\n" + "<div class='said'>" + msg['msgContent'] + "</div>");
+    };
+
+    function sendButtonClick(){
+      $('#say').click(function(){
+        var msg = $('#chatentry').val();
+        $('#chatentry').val('');
+        socket.emit('message', msg);
+      });
+    };
+
+    function goodbye(){
+      $('#chatbody').append("\n" + "Goodbye from RPU!");
+    };
+  });
+  
+  </script>
+</body>
+</html>
