@@ -15,7 +15,11 @@
   var CHAT_SERVER = 'http://devmachine.com:7000'
   $(document).ready(function(){
     var socket = io.connect(CHAT_SERVER);
-    socket.on('connect', userJoin, prompt("What's your name?"));
+    socket.on('connect', function(username){
+      socket.emit('adduser', prompt("Please enter your username"));
+      userJoin();
+      updateChat(username);
+    });
     socket.on('message', message);
     socket.on('disconnect', goodbye);
     sendButtonClick();
@@ -26,6 +30,10 @@
 
     function message(msg){
       $('#chatbody').append("\n" + "<div class='said'>" + msg['msgOwner'] + ": " + msg['msgContent'] + "</div>");
+    };
+
+    function updateChat(username){
+      $('#chatbody').append("\n" + "<div class='said'>" + username + ' has joined' + "</div>");
     };
 
     function sendButtonClick(){

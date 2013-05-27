@@ -14,6 +14,8 @@
 //     chatSocket.emit('init', {msg : 'hello! welcome to rpu'});
 // });
 
+var usernames = {};
+
 var DEFAULT_USERNAME = 'Guest';
 var express = require('express');
 var app = express();
@@ -21,8 +23,8 @@ var server = require('http').createServer(app).listen(7000);
 var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function(client){
-  client.on('user-join', getUsername);
   client.on('message', incoming);
+  client.on('adduser', getUsername);
 
   function incoming(msg){
     client.get('username', function(err, username){
@@ -39,10 +41,11 @@ io.sockets.on('connection', function(client){
 
   function getUsername(username){
     client.set('username', username);
+    client.username = username;
     var systemInfo = {
       msgOwner:'System',
       msgContent:'Your current username is ' + username
     };
-    client.emit('info', systemInfo);
+   client.emit('updateChat', username + ' has connected');
   }
 });
