@@ -15,19 +15,17 @@
   var CHAT_SERVER = 'http://devmachine.com:7000'
   $(document).ready(function(){
     var socket = io.connect(CHAT_SERVER);
-    socket.on('connect', hello);
-    socket.on('message', incoming);
+    socket.on('connect', userJoin, prompt("What's your name?"));
+    socket.on('message', message);
     socket.on('disconnect', goodbye);
-
-    hello();
     sendButtonClick();
 
-    function hello() {
+    function userJoin() {
       $('#chatbody').append('Welcome to RPU!');
     };
 
-    function incoming(msg){
-      $('#chatbody').append("\n" + "<div class='said'>" + msg['msgContent'] + "</div>");
+    function message(msg){
+      $('#chatbody').append("\n" + "<div class='said'>" + msg['msgOwner'] + ": " + msg['msgContent'] + "</div>");
     };
 
     function sendButtonClick(){

@@ -21,9 +21,8 @@ var server = require('http').createServer(app).listen(7000);
 var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function(client){
-  client.emit('welcome', {greetings:'Welcome to Chat Room!'});
+  client.on('user-join', getUsername);
   client.on('message', incoming);
-  client.on('user-join', welcomeMessage);
 
   function incoming(msg){
     client.get('username', function(err, username){
@@ -33,11 +32,12 @@ io.sockets.on('connection', function(client){
         msgOwner:username,
         msgContent:msg
       };
+      client.emit('message', broadcastMsg);
       client.broadcast.emit('message', broadcastMsg);
     });
   }
 
-  function welcomeMessage(username){
+  function getUsername(username){
     client.set('username', username);
     var systemInfo = {
       msgOwner:'System',
